@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html class="no-js ui-mobile-rendering" lang="es">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>Taller 1 curso de programacion en JS</title>
+		<link rel="Shortcut Icon" href="taller1_coordenadas/imagenes/armada.ico"/>
+
+		<meta name="author" content="Adrian Prieto">
+		<meta name="date" content="Julio 14 de 2021">
+		<meta name="revised" content="Julio 14 de 2021">
+		<script src="taller1_coordenadas/data.json"></script>
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="/geomap/resources/css/style.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+	</head>
+	<style>
+		body {background-color: #F0FFFF;}
+	
+		.header-img {
+			height: 100%;
+			width: 100%;
+		}
+	
+		.MainTitle {
+			text-align: center;
+	
+		
+			width: 100%
+		}
+		#myTable{
+        width: 200px;       
+        margin: 0 auto;	
+		}
+		
+		.modeloTabla {
+			border:1px solid #D8D8D8;
+
+			height:auto;
+			color: black;
+
+			margin: 4px;
+			padding: 4px;
+
+		}
+
+		.modeloTd_azul {
+			border:1px solid white;
+			padding:5px;
+			border-radius: 5px;
+			color:white;
+			background-color:#00132B;
+			font-family: arial, sans-serif;
+			font-size:12px;
+			text-align:center;
+		}
+    
+		.modeloTd_blanco {
+		border:1px solid white;
+		padding:5px;
+		border-radius: 5px;
+		color:#00132B;
+		background-color:#aad3eb; /*#FAFAFA #D8D8D8 */
+		font-family: arial, sans-serif;
+		font-size:12px;
+		text-align:right;
+		}    
+			
+
+	</style>
+
+	<body>
+
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+			  <!-- Brand and toggle get grouped for better mobile display -->
+			  <div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+				  <span class="sr-only">Toggle navigation</span>
+				  <span class="icon-bar"></span>
+				  <span class="icon-bar"></span>
+				  <span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">Proyectos JS</a>
+			  </div>
+		  
+			  <!-- Collect the nav links, forms, and other content for toggling -->
+			  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+				  <li><a href="/taller1">Taller1 coordenadas</a></li>
+				  <li><a href="/taller2">Taller1 oficinas ARC</a></li>
+				  <li><a href="/geo">Geo Map <span class="sr-only">(current)</span></a></li>
+				  <li><a href="#">Link</a></li>
+				  <li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Otros <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+					  <li><a href="#">Action</a></li>
+					  <li><a href="#">Another action</a></li>
+					  <li><a href="#">Something else here</a></li>
+					</ul>
+				  </li>
+				</ul>
+		  
+		 
+			  </div><!-- /.navbar-collapse -->
+			</div><!-- /.container-fluid -->
+		  </nav>
+		
+	
+		<div class="MainTitle"><h1>Taller No. 1 Introducción a JavaScript</h1></div>
+		
+		<p id="nombre_organizacion">Armada Nacional-JINA</p>
+
+		<button type="button" id="botonClick" >Buscar coordenadas</button> 
+		<hr><br>
+		<div id='myTable'>
+
+		</div>
+
+	</body>
+
+	<script>
+
+		var data = JSON.parse(data_configuration);
+		console.log(data);
+		var name_organizacion="";
+		var url_servicio="";
+		for(var	i in data)
+		{
+			switch (data[i].parameter) {
+				case 'name_organization':
+					name_organizacion = data[i].value;
+					break;
+					case 'URL':
+					url_servicio = data[i].value;
+					break;
+				default:
+					console.log("parametro no encontrado: "+data[i].parameter)
+			}
+		}
+		console.log(url_servicio)
+		document.getElementById("nombre_organizacion").innerHTML=name_organizacion;
+	
+		var boton = document.getElementById('botonClick');
+		boton.addEventListener('click', function(){
+			
+			let longitud = new Array();
+			let latitud = new Array();
+
+			var url_service = "http://serviciosgis.catastrobogota.gov.co/otrosservicios/rest/services/educacion/inversion/MapServer/0/query?where=COD_LOCA+%3D+15&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=pjson";
+			var xhr = new XMLHttpRequest();
+			xhr.open("POST",url_service);
+			xhr.send();
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState == 4 && xhr.status == 200) {
+					var json = this.responseText;
+					var obj = JSON.parse(json);
+					console.log(obj.features[0].geometry.rings[0]);
+					for(var i in obj.features[0].geometry.rings[0]) {
+						longitud.push(obj.features[0].geometry.rings[0][i][0]);
+						latitud.push(obj.features[0].geometry.rings[0][i][1]);
+
+						console.log(  + " - " + obj.features[0].geometry.rings[0][i][1] );
+					}
+
+					let tabla =`
+					<table class="modeloTabla">
+						<tr>
+							<th class="modeloTd_azul">Longitud</th>
+							<th class="modeloTd_azul">Latitud</th>
+						</tr>
+					`;
+
+					for(var i in longitud) {
+						tabla += `
+						<tr>
+							<td  class="modeloTd_blanco">${longitud[i]}</td>
+							<td  class="modeloTd_blanco">${latitud[i]}</td>
+						</tr>
+						`;
+					}
+					tabla +=`<table>`;
+					document.getElementById("myTable").innerHTML=tabla;
+				}
+			}			
+		});	
+	
+	
+	</script>
+
+</html>

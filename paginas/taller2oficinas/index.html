@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.plot.ly/plotly-2.2.1.min.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js'></script>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="/geomap/resources/css/style.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+</head>
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">Proyectos JS</a>
+      </div>
+    
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/taller1">Taller1 coordenadas</a></li>
+        <li><a href="/taller2">Taller1 oficinas ARC</a></li>
+        <li><a href="/geo">Geo Map <span class="sr-only">(current)</span></a></li>
+        <li><a href="#">Link</a></li>
+        <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Otros <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Action</a></li>
+          <li><a href="#">Another action</a></li>
+          <li><a href="#">Something else here</a></li>
+        </ul>
+        </li>
+      </ul>
+    
+   
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+    </nav>
+  <div id="myDiv">
+  </div>
+
+</body>
+<script>
+
+d3.csv("https://www.datos.gov.co/api/views/nav4-rbv7/rows.csv?accessType=DOWNLOAD", function(err, rows){
+
+  function unpack(rows, key) {
+    return rows.map(function(row) { return row[key]; });
+  }
+
+  var headerNames = d3.keys(rows[0]);
+  var headerValues = [];
+  var cellValues = [];
+  for (i = 0; i < headerNames.length; i++) {
+    headerValue = [headerNames[i]];
+    headerValues[i] = headerValue;
+    cellValue = unpack(rows, headerNames[i]);
+    cellValues[i] = cellValue;
+  }
+
+  // clean date
+  for (i = 0; i < cellValues[1].length; i++) {
+    var dateValue = cellValues[1][i].split(' ')[0]//// caracter de separacion
+    cellValues[1][i] = dateValue
+  }
+
+
+  var data = [{
+
+    type: 'table',
+
+    header: {
+      values: headerValues,
+      align: "center",
+      line: {width: 1, color: 'rgb(70,130,180)'},
+      fill: {color: ['rgb(25,25,112)']},
+      font: {family: "Arial", size: 8, color: "white"}
+    },
+
+    cells: {
+
+      values: cellValues,
+      align: ["center", "center"],
+      line: {color: "black", width: 1},
+      fill: {color: ['rgba(30,144,255, 0.65)','rgb(135,206,235)', 'rgba(135,206,250, 0.65)']},
+      font: {family: "Arial", size: 9, color: ["black"]}
+    }
+
+  }]
+
+  var layout = {
+    title: "Oficinas de Atención al Ciudadano Unidades Armada Nacional"
+  }
+  Plotly.newPlot('myDiv', data, layout);
+
+  
+});
+
+
+
+</script>
+</html>
